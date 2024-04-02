@@ -19,6 +19,19 @@ func main() {
 		AllowMethods: []string{echo.GET, echo.PUT, echo.POST, echo.DELETE},
 	}))
 
+	e.POST("/api/sign-up", func(c echo.Context) error{
+		type RegisterRequest struct {
+			Name string `json:"name"`
+			Email string `json:"email"`
+			Password string `json:"password"`
+		}
+
+		var req RegisterRequest
+		if err := c.Bind(&req); err != nil {
+			return err
+		}
+	})
+
 	e.POST("/api/login", func(c echo.Context) error {
 		type LoginRequest struct {
 			Email string `json:"email"`
@@ -61,8 +74,8 @@ func queryUser(email string) (*User, error) {
 	
 	var user User
 
-	query := "SELECT email, password FROM accounts WHERE email = ?"
-	err = db.QueryRow(query, email).Scan(&user.Email, &user.Password)
+	query := "SELECT user_email, user_password, user_name FROM User WHERE user_email = ?"
+	err = db.QueryRow(query, email).Scan(&user.Email, &user.Password, &user.Name)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, fmt.Errorf("no user found with email %s", email)
@@ -74,7 +87,23 @@ func queryUser(email string) (*User, error) {
 	return &user, nil
 }
 
+func registerUser(name, email, password string) error {
+	db, err := sql.Open("mysql", "root:Aa32133246@/users")
+	if err != nil {
+		return fmt.Errorf("資料庫連線失敗 %v", err)
+	}
+	defer db.Close()
+
+	var userCount int
+	err = db.QueryRow("SELECT COUNT(*) FROM User WHERE user_email = ? ", email).Scan(&userCount)
+	if userCount > 0 {
+		return fmt.Errorf("此用戶已被註冊")
+	}
+}
+
 type User struct {
+	Name		string
 	Email 		string
 	Password 	string
 }
+
