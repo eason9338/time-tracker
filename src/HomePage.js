@@ -4,7 +4,7 @@ const HomePage = () => {
     const {user, setUser} = useUser();
 
     return (
-            <div>{ user }</div>
+            <div>{ user.Name }</div>
     );
 }
  

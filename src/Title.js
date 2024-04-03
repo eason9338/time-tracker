@@ -3,7 +3,7 @@ import './content.css'
 const Title = () => {
     const {user, setUser} = useUser();
     
-    const displayName = user && user.name ? user.name: '';
+    const displayName = user && user.Name ? user.Name: '';
 
     return ( 
         <div>
