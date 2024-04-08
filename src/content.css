@@ -119,3 +119,8 @@ label {
     font-size: 20px;
     font-weight: bold;
 }
+
+/* Record display */
+.record {
+    display: flex;
+}

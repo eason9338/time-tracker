@@ -9,7 +9,10 @@ const Title = () => {
     const [endTime, setEndTime] = useState('');
     const [timeSpan, setTimeSpan] = useState('');
 
+    const [records, setRecords] = useState([]);
+
     const {user, setUser} = useUser();
+
 
     const calculateTimeSpan = () => {
         if(!startTime || !endTime) return;
@@ -33,16 +36,14 @@ const Title = () => {
             console.log("使用者未登入")
             return;
         }
-        
-        const start = new Date(`2024-01-01T${startTime}:00`);
-        const end = new Date(`2024-01-01T${endTime}:00`);
 
+        const userID = user.ID;
         const recordData = {
-            recordName,
-            start,
-            end,
+            record_name: recordName,
+            start_time: new Date(`2024-04-04T${startTime}:00`).toISOString(), 
+            end_time: new Date(`2024-04-04T${startTime}:00`).toISOString(),
             timeSpan,
-            user
+            userID
         }
 
         try {
@@ -55,15 +56,35 @@ const Title = () => {
                 body: JSON.stringify(recordData),
             });
 
-            if(response.success) {
+            const data = await response.json();
+            if(data.success) {
                 console.log('紀錄添加成功')
             } else {
-                console.err('紀錄添加失敗')
+                console.error('紀錄添加失敗')
             }
-        } catch(err) {
+        }catch(err) {
             console.error(err);
         }
     }
+
+    useEffect(() => {
+        const fetchRecords = async () => {
+            if(user) {
+                try {
+                    const response = await fetch(`http://localhost:8000/api/records/${user.ID}`)
+                    const data = await response.json();
+                    if(data.success) {
+                        setRecords(data.records);
+                    }else{
+                        console.error("紀錄拿取失敗");
+                    }
+                }catch (err){
+                    console.error("獲取紀錄過程發生錯誤：", err);
+                }
+            }
+        }
+        fetchRecords()
+    }, [user])
 
     return (
         <div className="function">
@@ -108,6 +129,19 @@ const Title = () => {
                         <button>Add</button>
                     </div>
                 </form>
+            </div>
+            <div className="records-list">
+            {records.length > 0 ? (
+                records.map((record, index) => (
+                    <div key={index} className="record">
+                        <h3>{record.record_name}</h3>
+                        <p>開始時間: {record.start_time}</p>
+                        <p>結束時間: {record.end_time}</p>
+                    </div>
+                ))
+            ) : (
+                <p>沒有找到記錄</p>
+            )}
             </div>
         </div>
     );

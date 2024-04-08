@@ -19,6 +19,8 @@ func main() {
 
 	e.POST("/api/records/add", AddRecord)
 
+	e.GET("/api/records/:userId", GetRecords)
+
 	e.Logger.Fatal(e.Start(":8000"))
 }
 
