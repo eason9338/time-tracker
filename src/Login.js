@@ -29,7 +29,7 @@ const Login = () => {
 			if (data.success) {
 				console.log("登入成功");
 				setUser(data.user);
-				localStorage.setItem("toke", data.token);
+				localStorage.setItem("token", data.token);
 				navigate("/");
 			} else {
 				console.error("登入失敗", data.message);

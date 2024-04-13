@@ -13,7 +13,6 @@ const Title = () => {
 
     const {user, setUser} = useUser();
 
-
     const calculateTimeSpan = () => {
         if(!startTime || !endTime) return;
         const start = new Date(`2024-01-01T${startTime}:00`);
@@ -38,10 +37,12 @@ const Title = () => {
         }
 
         const userID = user.ID;
+        const formattedStartTime = startTime + ":00";
+        const formattedEndTime = endTime + ":00";
         const recordData = {
             record_name: recordName,
-            start_time: new Date(`2024-04-04T${startTime}:00`).toISOString(), 
-            end_time: new Date(`2024-04-04T${startTime}:00`).toISOString(),
+            start_time: formattedStartTime,
+            end_time: formattedEndTime,
             timeSpan,
             userID
         }
@@ -59,6 +60,8 @@ const Title = () => {
             const data = await response.json();
             if(data.success) {
                 console.log('紀錄添加成功')
+                data.record.record_date = new Date(data.record.record_date).toLocaleDateString({year: 'numeric', month: '2-digit', day: '2-digit' });
+                setRecords([...records, data.record]);
             } else {
                 console.error('紀錄添加失敗')
             }
@@ -74,7 +77,12 @@ const Title = () => {
                     const response = await fetch(`http://localhost:8000/api/records/${user.ID}`)
                     const data = await response.json();
                     if(data.success) {
-                        setRecords(data.records);
+                        const formattedRecords = data.records.map(record => ({
+                            ...record,
+                            record_date: new Date(record.record_date).toLocaleDateString({year: 'numeric', month: '2-digit', day: '2-digit' }),
+                        }))
+
+                        setRecords(formattedRecords);
                     }else{
                         console.error("紀錄拿取失敗");
                     }
@@ -131,10 +139,11 @@ const Title = () => {
                 </form>
             </div>
             <div className="records-list">
-            {records.length > 0 ? (
+            {records ? (
                 records.map((record, index) => (
                     <div key={index} className="record">
                         <h3>{record.record_name}</h3>
+                        <p>日期：{record.record_date}</p>
                         <p>開始時間: {record.start_time}</p>
                         <p>結束時間: {record.end_time}</p>
                     </div>

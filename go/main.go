@@ -21,6 +21,8 @@ func main() {
 
 	e.GET("/api/records/:userId", GetRecords)
 
+	e.GET("/api/auto-login", AutoLogin)
+
 	e.Logger.Fatal(e.Start(":8000"))
 }
 
