@@ -1,4 +1,5 @@
 import './content.css'
+import './Timer.css'
 import {useState, useEffect} from 'react'
 import { useUser } from './UserContext'
 
@@ -142,10 +143,15 @@ const Title = () => {
             {records ? (
                 records.map((record, index) => (
                     <div key={index} className="record">
-                        <h3>{record.record_name}</h3>
-                        <p>日期：{record.record_date}</p>
-                        <p>開始時間: {record.start_time}</p>
-                        <p>結束時間: {record.end_time}</p>
+                        <div className="records-title">
+                            <p className='record-date'>日期：{record.record_date}</p>
+                        </div>
+                        <div className="records-time">
+                            <h3 className='record-name'>{record.record_name}</h3>
+                            <p className='record-starttime'>開始時間: {record.start_time}</p>
+                            <p className='record-endtime'>結束時間: {record.end_time}</p>
+                        </div>
+
                     </div>
                 ))
             ) : (
