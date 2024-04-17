@@ -24,7 +24,7 @@ func QueryUser(email string) (*User, error) {
 	
 	var user User
 
-	query := "SELECT user_email, user_password, user_name, ID FROM User WHERE user_email = ?"
+	query := "SELECT user_email, user_password, user_name, user_id FROM User WHERE user_email = ?"
 	err = db.QueryRow(query, email).Scan(&user.Email, &user.Password, &user.Name, &user.ID)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -51,9 +51,9 @@ func QueryUserByID(userID int) (*User, error){
 	}
 
 	var user User
-	query := "SELECT user_name, user_password, user_email, ID " +
+	query := "SELECT user_name, user_password, user_email, user_id " +
 	"FROM User " +
-	"WHERE ID = ?"
+	"WHERE user_id = ?"
 
 	err = db.QueryRow(query, userID).Scan(&user.Name, &user.Password, &user.Email, &user.ID)
 	if err != nil {

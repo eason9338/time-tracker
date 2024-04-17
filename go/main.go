@@ -19,7 +19,11 @@ func main() {
 
 	e.POST("/api/records/add", AddRecord)
 
+	e.POST("/api/tags/add", AddTag)
+
 	e.GET("/api/records/:userId", GetRecords)
+
+	e.GET("/api/tags/:userId", GetTags)
 
 	e.GET("/api/auto-login", AutoLogin)
 

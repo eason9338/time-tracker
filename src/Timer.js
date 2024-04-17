@@ -1,11 +1,14 @@
-import './content.css'
-import './Timer.css'
+import './style/content.css'
+import './style/Timer.css'
 import {useState, useEffect} from 'react'
 import { useUser } from './UserContext'
 
 const Title = () => {
 
     const [recordName, setRecordName] = useState('');
+    const [selectedTag, setSelectedTag] = useState('');
+    const [tags, setTags] = useState([]);
+    const [newTag, setNewTag] = useState('');
     const [startTime, setStartTime] = useState('');
     const [endTime, setEndTime] = useState('');
     const [timeSpan, setTimeSpan] = useState('');
@@ -13,6 +16,8 @@ const Title = () => {
     const [records, setRecords] = useState([]);
 
     const {user, setUser} = useUser();
+
+    const padTime = (num) => num.toString().padStart(2, '0');
 
     const calculateTimeSpan = () => {
         if(!startTime || !endTime) return;
@@ -27,6 +32,8 @@ const Title = () => {
         const minute = Math.floor(diff / 1000 / 60 ) % 60;
 
         setTimeSpan(`${hour}小時 ${minute}分鐘`);
+        return `${padTime(hour)}:${padTime(minute)}:00`;
+
     }
 
     const handleSubmit = async (e) => {
@@ -37,17 +44,19 @@ const Title = () => {
             return;
         }
 
-        const userID = user.ID;
-        const formattedStartTime = startTime + ":00";
-        const formattedEndTime = endTime + ":00";
+        const userID = user.user_id
+        const currentDate = new Date().toISOString().slice(0, 10);
+        const formattedStartTime = `${currentDate}T${startTime}:00`;
+        const formattedEndTime = `${currentDate}T${endTime}:00`;
+        const duration = calculateTimeSpan(); // 調用函數並使用返回的值
         const recordData = {
             record_name: recordName,
             start_time: formattedStartTime,
             end_time: formattedEndTime,
-            timeSpan,
-            userID
+            duration: duration,
+            user_id: userID,
+            tag_id: parseInt(selectedTag, 10),
         }
-
         try {
            
             const response = await fetch("http://localhost:8000/api/records/add", {
@@ -61,8 +70,7 @@ const Title = () => {
             const data = await response.json();
             if(data.success) {
                 console.log('紀錄添加成功')
-                data.record.record_date = new Date(data.record.record_date).toLocaleDateString({year: 'numeric', month: '2-digit', day: '2-digit' });
-                setRecords([...records, data.record]);
+                fetchRecords();
             } else {
                 console.error('紀錄添加失敗')
             }
@@ -71,34 +79,100 @@ const Title = () => {
         }
     }
 
-    useEffect(() => {
-        const fetchRecords = async () => {
-            if(user) {
-                try {
-                    const response = await fetch(`http://localhost:8000/api/records/${user.ID}`)
-                    const data = await response.json();
-                    if(data.success) {
+    const handleNewTagSubmit = async () => {
+        try {
+            const response = await fetch('http://localhost:8000/api/tags/add', {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+                body: JSON.stringify({tag_name: newTag}),
+            })
+            const data = response.json();
+            if(data.success) {
+                setNewTag('')
+                console.log('標籤新增成功');
+                fetchTags();
+            } else {
+                console.error('標籤添加失敗');
+            }
+        } catch (err) {
+            console.error('添加標籤過程發生錯誤', err);
+        }
+    }
+
+    const fetchTags = async () => {
+        if (!user) {
+            console.log('No user logged in.');
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:8000/api/tags/${user.user_id}`);
+            const data = await response.json();
+            if(data.success) {
+                setTags(data.tags);
+                console.log('使用者標籤取得成功');
+            } else {
+                console.error('使用者標籤取得失敗')
+            }
+        } catch (err) {
+            console.error('讀取標籤過程發生錯誤', err);
+        }
+    }
+
+    const fetchRecords = async () => {
+        if(user) {
+            try {
+                const response = await fetch(`http://localhost:8000/api/records/${user.user_id}`)
+                const data = await response.json();
+                if(data.success) {
+                    if(data.records) {
                         const formattedRecords = data.records.map(record => ({
                             ...record,
-                            record_date: new Date(record.record_date).toLocaleDateString({year: 'numeric', month: '2-digit', day: '2-digit' }),
+                            record_date: new Date(record.record_date).toLocaleDateString('en-GB', {year: 'numeric', month: '2-digit', day: '2-digit'}),
+                            start_time: new Date(record.start_time).toLocaleTimeString('zh-TW', {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                second: '2-digit',
+                                hour12: false,
+                                timeZone: 'UTC'
+                            }),
+                            end_time: new Date(record.end_time).toLocaleTimeString('zh-TW', {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                second: '2-digit',
+                                hour12: false,
+                                timeZone: 'UTC'
+                            }),
                         }))
-
+    
                         setRecords(formattedRecords);
-                    }else{
-                        console.error("紀錄拿取失敗");
+                        console.log('使用者紀錄取得成功');
                     }
-                }catch (err){
-                    console.error("獲取紀錄過程發生錯誤：", err);
+                    console.log('使用者紀錄取得成功，但紀錄為空');
+                }else{
+                    console.error("紀錄拿取失敗");
                 }
+            }catch (err){
+                console.error("獲取紀錄過程發生錯誤：", err);
             }
+        } else {
+            console.log('使用者未登入，無法加載紀錄');
         }
+    }
+
+    useEffect(() => {
+        console.log(user)
         fetchRecords()
+        fetchTags()
     }, [user])
+
 
     return (
         <div className="function">
             <div className="greeting">
-                <p className = {user ? "show": "hide"}>Hello! {user ? user.Name: ''}, let's make the day count! </p>
+                <p className = {user ? "show": "hide"}>Hello! {user ? user.user_name: ''}, let's make the day count! </p>
                 <p className = {user ? "hide": "show"}>Hello! Login first to start tracking your day </p>
             </div>
             <div className="input-column">
@@ -116,10 +190,25 @@ const Title = () => {
                         ></input>
                         <select
                             className='tag'
+                            value = {selectedTag}
+                            onChange={(e) => setSelectedTag(e.target.value)}
                         >
-                            <option>working</option>
-                            <option>entertaining</option>
+                            {tags && tags.map((tag, index) => {
+                                return <option key={index} value={tag.tag_id}>{tag.tag_name}</option>
+                            })}
+                            <option value="new-tag">... New Tag</option>
                         </select>
+                        {/* {selectedTag === '' && (
+                            <div className="new-tag-input">
+                                <input
+                                    type='text'
+                                    placeholder='Enter new tag...'
+                                    value={newTag}
+                                    onChange={(e) => setNewTag(e.target.value)}
+                                ></input>
+                                <button onClick={handleNewTagSubmit}>Add tag</button>
+                            </div>
+                        )} */}
                         <input
                             type='time'
                             value = {startTime}
@@ -145,11 +234,14 @@ const Title = () => {
                     <div key={index} className="record">
                         <div className="records-title">
                             <p className='record-date'>日期：{record.record_date}</p>
+                            <p className='record-duration'>{record.duration}</p>
                         </div>
                         <div className="records-time">
                             <h3 className='record-name'>{record.record_name}</h3>
-                            <p className='record-starttime'>開始時間: {record.start_time}</p>
-                            <p className='record-endtime'>結束時間: {record.end_time}</p>
+                            <p className='record-tag'>{record.tag_name}</p>
+                            <p className='record-starttime'>{record.start_time}</p>
+                            <p>-</p>
+                            <p className='record-endtime'>{record.end_time}</p>
                         </div>
 
                     </div>

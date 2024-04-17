@@ -1,9 +1,9 @@
 import { useUser } from './UserContext';
-import './content.css'
+import './style/content.css'
 const Title = () => {
     const {user, setUser} = useUser();
     
-    const displayName = user && user.Name ? user.Name: '';
+    const displayName = user && user.user_name ? user.user_name: '';
 
     return ( 
         <div>

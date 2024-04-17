@@ -11,10 +11,10 @@ import (
 )
 
 type User struct {
-	ID			int
-	Name		string
-	Email 		string
-	Password 	string
+	ID			int `json:"user_id"`
+	Name		string `json:"user_name"`
+	Email 		string `json:"user_email"`
+	Password 	string `json:"user_password"`
 }
 
 func UserRegister(c echo.Context) error {

@@ -1,4 +1,4 @@
-import './navbar.css'
+import './style/navbar.css'
 import {Link} from 'react-router-dom';
 import { useUser } from './UserContext';
 
@@ -7,7 +7,7 @@ const Navbar = () => {
     return (
         <nav className="navbar">
             <div className="home-link">
-                <Link to='/'>Demo Web</Link>
+                <Link to='/'>Pomodoro</Link>
             </div>
             <div className="links">
                 <Link to='/timer'>Timer</Link>

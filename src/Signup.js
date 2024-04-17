@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import "./content.css";
+import "./style/content.css";
 import { useNavigate, Link } from "react-router-dom";
 
 const USER_REGEX = /^[a-zA-Z0-9]{3,10}$/;

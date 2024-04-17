@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import './content.css';
+import './style/content.css';
 import { useEffect } from "react";
 
 const NotFound = () => {
