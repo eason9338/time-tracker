@@ -1,0 +1,55 @@
+.record {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    width: 600px;
+    margin-right: auto;
+    margin-left: auto;
+    box-shadow: 1px 3px 5px rgba(0, 0, 0, 0.1);
+}
+
+.records-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #eaeaea;
+}
+
+.record-date {
+    margin-right: auto;
+    padding: 5px 10px;
+}
+
+.record-duration {
+    margin-left: auto;
+    padding: 5px 10px;
+    font-weight: bold;
+}
+
+.records-time {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.record-name {
+    margin-right: 150px;
+    padding: 5px 10px;
+}
+
+.record_tag {
+    margin: auto;
+    padding: 5px 10px;
+}
+
+.record-starttime {
+    width: 60px;
+    margin-left: auto;
+    padding: 5px 10px;
+}
+
+.record-endtime {
+    width: 60px;
+    margin: 0;
+    padding: 5px 10px;
+}
