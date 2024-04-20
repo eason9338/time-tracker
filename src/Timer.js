@@ -238,6 +238,7 @@ const Title = () => {
                         </div>
                         <div className="records-time">
                             <h3 className='record-name'>{record.record_name}</h3>
+                            <p>・</p>
                             <p className='record-tag'>{record.tag_name}</p>
                             <p className='record-starttime'>{record.start_time}</p>
                             <p>-</p>

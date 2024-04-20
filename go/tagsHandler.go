@@ -12,6 +12,7 @@ import (
 type Tag struct {
 	TagName string `json:"tag_name"`
 	TagID int `json:"tag_id"`
+	UserID int `json:"user_id"`
 }
 
 func AddTag(c echo.Context) error {
@@ -32,19 +33,19 @@ func AddTag(c echo.Context) error {
 		return err
 	}
 
-	query := "INSERT INTO Tags (tag_name) VALUES ?"
-	_, err = db.Exec(query, tag.TagName)
+	query := "INSERT INTO Tags (tag_name, user_id) VALUES (?, ?)"
+	_, err = db.Exec(query, tag.TagName, tag.UserID)
 	if err != nil {
-		log.Printf("紀錄失敗：%v", err)
+		log.Printf("標籤添加失敗：%v", err)
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"success": false,
-			"message": "紀錄添加失敗",
+			"message": "標籤添加失敗",
 		})
 	}
 
 	return c.JSON(http.StatusCreated, map[string]interface{}{
 		"success": true,
-		"message": "記錄已添加",
+		"message": "標籤已添加",
 	})
 }
 
@@ -94,4 +95,29 @@ func GetTags(c echo.Context) error {
 		"success": true,
 		"tags": tags,
 	})
-} 
+}
+
+func DeleteTag(c echo.Context) error {
+	tag_id := c.Param("tag_id")
+	db, err := sql.Open("mysql", "root:Aa32133246@/users?parseTime=true")
+	if err != nil {
+		log.Printf("資料庫連接失敗：%v", err)
+		return err
+	}
+	defer db.Close();
+
+	query := "DELETE FROM Tags WHERE tag_id = ?"
+	_, err = db.Exec(query, tag_id)
+	if err != nil {
+		log.Printf("刪除失敗：%v", err)
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"success": false,
+			"message": "紀錄刪除失敗",
+		})
+	}
+
+	return c.JSON(http.StatusCreated, map[string]interface{}{
+		"success": true,
+		"message": "標籤已刪除",
+	})
+}

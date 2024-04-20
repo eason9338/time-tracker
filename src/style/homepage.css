@@ -1,0 +1,49 @@
+.manage-tag-page {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.personal-info {
+    display: flex;
+    width: 300px;
+}
+
+.personal-email {
+    margin-left: auto;
+}
+
+h3 {
+    margin:10px 0;
+}
+
+.tags-list {
+    display: flex;
+    max-width: 150px;
+    margin: 0 auto;
+    padding: 5px;
+    border-bottom: 1px solid #f2f2f2;
+}
+
+.new-tag-form {
+    max-width: 200px;
+    margin: 0 auto;
+}
+
+.add-tag-button {
+    width: 30px;
+    height: 30px;
+    /* margin: 10px; */
+    border-radius: 5px;
+    background-color: transparent;
+}
+
+.delete-tag-button {
+    width: 30px;
+    height: 30px;
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-left: auto;
+    margin-right: 0;
+    border-radius: 5px;
+    background-color: transparent;
+}

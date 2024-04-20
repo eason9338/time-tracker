@@ -7,6 +7,7 @@ import Timer from './Timer';
 import Login from './Login';
 import Signup from './Signup';
 import HomePage from './HomePage';
+import ManageTag from './ManageTag';
 import { UserProvider } from './UserContext';
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
               <Route path='/log-in' element={<Login />} />
               <Route path='/sign-up' element={<Signup />} />
               <Route path='/home-page' element={<HomePage />} />
+              <Route path='/home-page/manage-tag' element={<ManageTag />} />
             </Routes>
           </main>
         </div>

@@ -27,6 +27,8 @@ func main() {
 
 	e.GET("/api/auto-login", AutoLogin)
 
+	e.DELETE("/api/tags/:tag_id", DeleteTag)
+
 	e.Logger.Fatal(e.Start(":8000"))
 }
 
