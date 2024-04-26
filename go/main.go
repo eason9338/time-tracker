@@ -1,6 +1,9 @@
 package main
 
 import (
+	"log"
+
+	"time-tracker/database"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -8,9 +11,9 @@ import (
 func main() {
 	e := echo.New()
 
-	// if err := database.SetupDatabase(); err != nil {
-	// 	log.Fatal(err)
-	// }
+	if err := database.SetupDatabase(); err != nil {
+		log.Fatal(err)
+	}
 
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins: []string{"http://localhost:3000"},
