@@ -1,5 +1,5 @@
-import { useUser } from './UserContext';
-import './style/content.css'
+import { useUser } from '../context/UserContext';
+import '../style/content.css'
 const Title = () => {
     const {user, setUser} = useUser();
     

@@ -1,6 +1,8 @@
 import { useState } from "react";
-import { useUser } from './UserContext';
+import { useUser } from '../context/UserContext';
 import { useNavigate, Link } from "react-router-dom";
+import { Button } from '../components/Button';
+import { login } from '../api/login'
 
 const Login = () => {
 	const [email, setEmail] = useState("");
@@ -11,37 +13,26 @@ const Login = () => {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-
+		const input = {
+			email,
+			password,
+		}
 		try {
-			const input = {
-				email,
-				password,
-			};
-			const response = await fetch("http://localhost:8000/api/login", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(input),
-			});
-
-			const data = await response.json();
-			if (data.success) {
+			const data = await login(input);
+			if(data.success) {
 				console.log("登入成功");
 				setUser(data.user);
 				localStorage.setItem("token", data.token);
-				navigate("/");
+				navigate('/');
 			} else {
 				console.error("登入失敗", data.message);
-				setNotice(true);
 			}
-		} catch (error) {
-			console.error("登入過程中發生錯誤：", error);
+			
+		} catch(error) {
+			console.error("登入過程發生錯誤", error);
 			setNotice(true);
 		}
 	};
-
-	
 
 	return (
 			<div className="form">
@@ -62,7 +53,8 @@ const Login = () => {
 						value={password}
 						onChange={(e) => setPassword(e.target.value)}
 					></input>
-					<button className="link-login" disabled={!(email && password)}>Log in</button>
+					<Button className="link-login" disabled={!(email && password)}>Log in</Button>
+					{/* <button className="link-login" disabled={!(email && password)}>Log in</button> */}
 				</form>
 				<br />
 				<span className="link-signup">

@@ -1,15 +1,15 @@
 import { Link, useNavigate } from "react-router-dom";
-import './style/content.css';
+import '../style/content.css';
 import { useEffect } from "react";
 
 const NotFound = () => {
 
     const navigate = useNavigate();
-    // useEffect(() => {
-    //     setTimeout(() => {
-    //         navigate('/');
-    //     }, 5000)
-    // })
+    useEffect(() => {
+        setTimeout(() => {
+            navigate('/');
+        }, 5000)
+    })
 
     return (
         <div className="not-found">

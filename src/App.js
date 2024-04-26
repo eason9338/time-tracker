@@ -1,14 +1,14 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 // Importing components
-import Navbar from './Navbar';
-import Title from './Title';
-import NotFound from './NotFound';
-import Timer from './Timer';
-import Login from './Login';
-import Signup from './Signup';
-import HomePage from './HomePage';
-import ManageTag from './ManageTag';
-import { UserProvider } from './UserContext';
+import Navbar from './pages/Navbar';
+import Title from './pages/Title';
+import NotFound from './pages/NotFound';
+import Timer from './pages/Timer';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import HomePage from './pages/HomePage';
+import ManageTag from './pages/ManageTag';
+import { UserProvider } from './context/UserContext';
 
 function App() {
   return (

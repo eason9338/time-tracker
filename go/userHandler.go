@@ -31,7 +31,7 @@ func UserRegister(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
-		"success": true, "message": "登入成功",
+		"success": true, "message": "註冊成功",
 	})
 }
 

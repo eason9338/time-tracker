@@ -1,9 +1,9 @@
 import {useEffect, useState} from 'react';
-import {useUser} from './UserContext';
-import {fetchTags} from './api';
+import {useUser} from '../context/UserContext';
+import {fetchTags} from '../api/fetchTags';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark, faCirclePlus } from '@fortawesome/free-solid-svg-icons';
-import './style/homepage.css'
+import '../style/homepage.css'
 
 const ManageTag = () => {
 
@@ -69,7 +69,7 @@ const ManageTag = () => {
             <form className='new-tag-form' onSubmit={handleTagAdd}>
                 <input 
                     type="text"
-                    className='new-tag-name'
+                    className='new-tag-input'
                     value={newTag}
                     onChange={(e) => setNewTag(e.target.value)}
                     required

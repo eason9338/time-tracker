@@ -8,6 +8,10 @@ import (
 func main() {
 	e := echo.New()
 
+	// if err := database.SetupDatabase(); err != nil {
+	// 	log.Fatal(err)
+	// }
+
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins: []string{"http://localhost:3000"},
 		AllowMethods: []string{echo.GET, echo.PUT, echo.POST, echo.DELETE},

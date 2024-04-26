@@ -1,6 +1,6 @@
-import './style/navbar.css'
+import '../style/navbar.css'
 import {Link} from 'react-router-dom';
-import { useUser } from './UserContext'
+import { useUser } from '../context/UserContext'
 
 const Navbar = () => {
     const {user, setUser} = useUser();

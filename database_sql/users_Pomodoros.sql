@@ -19,10 +19,9 @@
 -- Table structure for table `Pomodoros`
 --
 
-DROP TABLE IF EXISTS `Pomodoros`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Pomodoros` (
+CREATE TABLE IF NOT EXISTS` Pomodoros` (
   `timer_id` int NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
   `focus_duration` time NOT NULL,

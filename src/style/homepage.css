@@ -3,12 +3,17 @@
     margin: 0 auto;
 }
 
+.personal-page {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
 .personal-info {
     display: flex;
     width: 300px;
 }
 
-.personal-email {
+.personal-content {
     margin-left: auto;
 }
 
@@ -18,7 +23,7 @@ h3 {
 
 .tags-list {
     display: flex;
-    max-width: 150px;
+    max-width: 250px;
     margin: 0 auto;
     padding: 5px;
     border-bottom: 1px solid #f2f2f2;

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import "./style/content.css";
+import "../style/content.css";
 import { useNavigate, Link } from "react-router-dom";
 
 const USER_REGEX = /^[a-zA-Z0-9]{3,10}$/;
@@ -31,9 +31,9 @@ const Signup = () => {
 		} else {
 			try {
 				const userData = {
-					name,
-					email,
-					password: pw,
+					user_name: name,
+					user_email: email,
+					user_password: pw,
 				};
 
 				const result = await fetch("http://localhost:8000/api/register", {

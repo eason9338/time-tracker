@@ -1,9 +1,9 @@
-import './style/content.css'
-import './style/Timer.css'
+import '../style/content.css'
+import '../style/Timer.css'
 import {useState, useEffect} from 'react'
-import { useUser } from './UserContext'
+import { useUser } from '../context/UserContext'
 
-const Title = () => {
+const Timer = () => {
 
     const [recordName, setRecordName] = useState('');
     const [selectedTag, setSelectedTag] = useState('');
@@ -172,7 +172,7 @@ const Title = () => {
     return (
         <div className="function">
             <div className="greeting">
-                <p className = {user ? "show": "hide"}>Hello! {user ? user.user_name: ''}, let's make the day count! </p>
+                <h2 className = {user ? "show": "hide"}>Hello! {user ? user.user_name: ''}, let's make the day count! </h2>
                 <p className = {user ? "hide": "show"}>Hello! Login first to start tracking your day </p>
             </div>
             <div className="input-column">
@@ -255,4 +255,4 @@ const Title = () => {
     );
 }
  
-export default Title;
+export default Timer;

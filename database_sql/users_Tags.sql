@@ -19,10 +19,9 @@
 -- Table structure for table `Tags`
 --
 
-DROP TABLE IF EXISTS `Tags`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Tags` (
+CREATE TABLE IF NOT EXISTS `Tags` (
   `tag_id` int NOT NULL AUTO_INCREMENT,
   `tag_name` varchar(225) NOT NULL,
   PRIMARY KEY (`tag_id`),
