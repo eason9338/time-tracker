@@ -2,13 +2,14 @@ import '../style/content.css'
 import '../style/Timer.css'
 import {useState, useEffect} from 'react'
 import { useUser } from '../context/UserContext'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
 const Timer = () => {
 
     const [recordName, setRecordName] = useState('');
     const [selectedTag, setSelectedTag] = useState('');
     const [tags, setTags] = useState([]);
-    const [newTag, setNewTag] = useState('');
     const [startTime, setStartTime] = useState('');
     const [endTime, setEndTime] = useState('');
     const [timeSpan, setTimeSpan] = useState('');
@@ -79,28 +80,6 @@ const Timer = () => {
         }
     }
 
-    const handleNewTagSubmit = async () => {
-        try {
-            const response = await fetch('http://localhost:8000/api/tags/add', {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-                body: JSON.stringify({tag_name: newTag}),
-            })
-            const data = response.json();
-            if(data.success) {
-                setNewTag('')
-                console.log('標籤新增成功');
-                fetchTags();
-            } else {
-                console.error('標籤添加失敗');
-            }
-        } catch (err) {
-            console.error('添加標籤過程發生錯誤', err);
-        }
-    }
-
     const fetchTags = async () => {
         if (!user) {
             console.log('No user logged in.');
@@ -139,7 +118,7 @@ const Timer = () => {
                                 timeZone: 'UTC'
                             }),
                             end_time: new Date(record.end_time).toLocaleTimeString('zh-TW', {
-                                hour: '2-digit',
+                                hokur: '2-digit',
                                 minute: '2-digit',
                                 second: '2-digit',
                                 hour12: false,
@@ -149,8 +128,10 @@ const Timer = () => {
     
                         setRecords(formattedRecords);
                         console.log('使用者紀錄取得成功');
+                    }else{
+                        console.log('使用者紀錄取得成功，但紀錄為空');
+                        setRecords([]);
                     }
-                    console.log('使用者紀錄取得成功，但紀錄為空');
                 }else{
                     console.error("紀錄拿取失敗");
                 }
@@ -160,6 +141,20 @@ const Timer = () => {
         } else {
             console.log('使用者未登入，無法加載紀錄');
         }
+    }
+
+    const deleteRecords = async (record_id) => {
+        console.log(record_id);
+        const response = await fetch(`http://localhost:8000/api/records/${record_id}`, {
+            method: 'DELETE',
+        })
+        const data = await response.json();
+        if(data.success) {
+            console.log('紀錄刪除成功')
+            fetchRecords()
+        } else {
+            console.error('紀錄刪除失敗')
+        }    
     }
 
     useEffect(() => {
@@ -193,22 +188,12 @@ const Timer = () => {
                             value = {selectedTag}
                             onChange={(e) => setSelectedTag(e.target.value)}
                         >
+                            <option>select tag</option>
                             {tags && tags.map((tag, index) => {
                                 return <option key={index} value={tag.tag_id}>{tag.tag_name}</option>
                             })}
-                            <option value="new-tag">... New Tag</option>
                         </select>
-                        {/* {selectedTag === '' && (
-                            <div className="new-tag-input">
-                                <input
-                                    type='text'
-                                    placeholder='Enter new tag...'
-                                    value={newTag}
-                                    onChange={(e) => setNewTag(e.target.value)}
-                                ></input>
-                                <button onClick={handleNewTagSubmit}>Add tag</button>
-                            </div>
-                        )} */}
+
                         <input
                             type='time'
                             value = {startTime}
@@ -235,6 +220,9 @@ const Timer = () => {
                         <div className="records-title">
                             <p className='record-date'>日期：{record.record_date}</p>
                             <p className='record-duration'>{record.duration}</p>
+                            <button className='delete-record-button' onClick={() => {deleteRecords(record.record_id)}}>
+                                <FontAwesomeIcon icon={faXmark} className='icon'></FontAwesomeIcon>
+                            </button>
                         </div>
                         <div className="records-time">
                             <h3 className='record-name'>{record.record_name}</h3>

@@ -8,9 +8,11 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo/v4"
+	"time-tracker/database"
 )
 
 type Record struct {
+	RecordID	int `json:"record_id"`
 	RecordName	string `json:"record_name"`
 	StartTime 	string `json:"start_time"`
 	EndTime		string `json:"end_time"`
@@ -73,7 +75,7 @@ func GetRecords(c echo.Context) error {
 
 	var records []Record
 
-	rows, err := db.Query("SELECT record_name, start_time, end_time, record_date, duration, tag_id FROM Records WHERE user_id = ?", user_id)
+	rows, err := db.Query("SELECT record_id, record_name, start_time, end_time, record_date, duration, tag_id FROM Records WHERE user_id = ?", user_id)
 	if err != nil {
 		log.Printf("紀錄搜尋失敗：%v", err)
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
@@ -85,7 +87,7 @@ func GetRecords(c echo.Context) error {
 
 	for rows.Next(){
 		var record Record
-		if err := rows.Scan(&record.RecordName, &record.StartTime, &record.EndTime, &record.RecordDate, &record.Duration, &record.TagID); err != nil {
+		if err := rows.Scan(&record.RecordID, &record.RecordName, &record.StartTime, &record.EndTime, &record.RecordDate, &record.Duration, &record.TagID); err != nil {
 			log.Printf("紀錄掃描失敗：%v", err)
 			return c.JSON(http.StatusInternalServerError, map[string]interface{}{
 				"success": false,
@@ -128,13 +130,31 @@ func GetRecordTag(tag_id int) (string, error) {
 	var tag_name string
 
 	query := "SELECT tag_name FROM tags WHERE tag_id = ?"
-	rows := db.QueryRow(query, tag_id);
+	rows := db.QueryRow(query, tag_id)
 	if err := rows.Scan(&tag_name) ; err != nil {
 		return "", err
 	} 
 	defer db.Close()
 
 	return tag_name, nil
+}
+
+func DeleteRecord(c echo.Context) error {
+	record_id := c.Param("record_id")
+	db, err := database.OpenDB()
+	if err != nil {
+		log.Printf("資料庫連接失敗：%v", err)
+		return err
+	}
+	defer db.Close()
+
+	query := "DELETE FROM Records WHERE record_id = ?"
+	_, err = db.Exec(query, record_id)
+	if err != nil {
+        return err
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{"success": true, "message": "記錄已刪除"})
 }
  
 

@@ -36,6 +36,8 @@ func main() {
 
 	e.DELETE("/api/tags/:tag_id", DeleteTag)
 
+	e.DELETE("/api/records/:record_id", DeleteRecord)
+
 	e.Logger.Fatal(e.Start(":8000"))
 }
 
