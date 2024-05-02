@@ -9,7 +9,7 @@ import (
 )
 
 func QueryUser(email string) (*User, error) {
-	db, err := sql.Open("mysql", "root:Aa32133246@/users")
+	db, err := sql.Open("mysql", "root@/time_tracker")
 	if err != nil {
 		return nil, err
 	}
@@ -38,7 +38,7 @@ func QueryUser(email string) (*User, error) {
 }
 
 func QueryUserByID(userID int) (*User, error){
-	db, err := sql.Open("mysql", "root:Aa32133246@/users")
+	db, err := sql.Open("mysql", "root@/time_tracker")
 	if err != nil {
 		return nil, err
 	}

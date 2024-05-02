@@ -11,10 +11,10 @@ import (
 )
 
 type User struct {
-	ID			int `json:"user_id"`
-	Name		string `json:"user_name"`
-	Email 		string `json:"user_email"`
-	Password 	string `json:"user_password"`
+	ID       int    `json:"user_id"`
+	Name     string `json:"user_name"`
+	Email    string `json:"user_email"`
+	Password string `json:"user_password"`
 }
 
 func UserRegister(c echo.Context) error {
@@ -26,7 +26,7 @@ func UserRegister(c echo.Context) error {
 	err := registerUser(req)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
-			"success": false, "message": "註冊失敗",
+			"success": false, "message": "註冊失敗", "error": err.Error(),
 		})
 	}
 
@@ -37,7 +37,7 @@ func UserRegister(c echo.Context) error {
 
 func UserLogin(c echo.Context) error {
 	type LoginRequest struct {
-		Email string `json:"email"`
+		Email    string `json:"email"`
 		Password string `json:"password"`
 	}
 
@@ -64,7 +64,7 @@ func UserLogin(c echo.Context) error {
 }
 
 func registerUser(user User) error {
-	db, err := sql.Open("mysql", "root:Aa32133246@/users")
+	db, err := sql.Open("mysql", "root@/time_tracker")
 	if err != nil {
 		return fmt.Errorf("資料庫連線失敗 %v", err)
 	}
@@ -86,5 +86,3 @@ func registerUser(user User) error {
 
 	return nil
 }
-
-

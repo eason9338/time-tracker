@@ -2,70 +2,50 @@ package database
 
 import (
 	"database/sql"
+	"log"
 	"os"
+	"runtime"
 )
 
 func SetupDatabase() error {
-    // 更新資料庫連接字串
-    db, err := sql.Open("mysql", "root:Aa32133246@/users")
-    if err != nil {
-        return err
-    }
-    defer db.Close()
+	db, err := sql.Open("mysql", "root@/time_tracker")
+	if err != nil {
+		logError(err)
+		return err
+	}
+	defer db.Close()
 
-    // Plan資料表
-    data, err := os.ReadFile("../database_sql/users_Plans.sql")
-    if err != nil {
-        return err
-    }
+	// 初始化數據表，以及相應的 SQL 腳本
+	tables := []string{"Plans", "Pomodoros", "Records", "Tags", "User"}
+	for _, table := range tables {
+		if err := initTable(db, table); err != nil {
+			logError(err)
+			return err
+		}
+	}
+	return nil
+}
 
-    _, err = db.Exec(string(data))
-    if err != nil {
-        return err
-    }
+func initTable(db *sql.DB, tableName string) error {
+	filePath := "../database_sql/users_" + tableName + ".sql"
+	data, err := os.ReadFile(filePath)
+	if err != nil {
+		logError(err)
+		return err
+	}
 
-	// Pomodoros資料表
-	data, err = os.ReadFile("../database_sql/users_Plans.sql")
-    if err != nil {
-        return err
-    }
+	if _, err := db.Exec(string(data)); err != nil {
+		logError(err)
+		return err
+	}
+	return nil
+}
 
-    _, err = db.Exec(string(data))
-    if err != nil {
-        return err
-    }
-
-	// Records資料表
-	data, err = os.ReadFile("../database_sql/users_Plans.sql")
-    if err != nil {
-        return err
-    }
-
-    _, err = db.Exec(string(data))
-    if err != nil {
-        return err
-    }
-
-	// Tags資料表
-	data, err = os.ReadFile("../database_sql/users_Plans.sql")
-    if err != nil {
-        return err
-    }
-
-    _, err = db.Exec(string(data))
-    if err != nil {
-        return err
-    }
-
-	// Users資料表
-	data, err = os.ReadFile("../database_sql/users_Plans.sql")
-    if err != nil {
-        return err
-    }
-
-    _, err = db.Exec(string(data))
-    if err != nil {
-        return err
-    }
-    return nil
+func logError(err error) {
+	_, file, line, ok := runtime.Caller(1)
+	if ok {
+		log.Printf("Error: %v occurred in %s at line %d", err, file, line)
+	} else {
+		log.Printf("Error: %v", err)
+	}
 }
